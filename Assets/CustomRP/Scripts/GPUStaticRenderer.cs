@@ -50,6 +50,11 @@ public class GPUStaticRenderer : MonoBehaviour
         }
         lastMaterial = this.material;
     }
+
+    private void OnDrawGizmos(){
+        Debug.Log(Event.current.commandName);   
+        Gizmos.DrawMesh(this.mesh, this.transform.position, this.transform.rotation, this.transform.lossyScale);
+    }
 #endif
 
     public void Initialize()

@@ -88,8 +88,6 @@ public class CameraRenderer
             var raycastResult = new List<RaycastResult>();
             var pointerEventData = new PointerEventData(EventSystem.current);
             pointerEventData.position = Event.current.mousePosition;
-            Debug.Log(pointerEventData.position);
-            Debug.Log(EventSystem.current);
             //EventSystem.current.RaycastAll(pointerEventData, raycastResult);
             //Debug.Log(raycastResult[0]);
         } 
