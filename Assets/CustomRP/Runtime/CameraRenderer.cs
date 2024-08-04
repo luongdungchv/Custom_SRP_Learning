@@ -1,6 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.Serialization;
+using UnityEditor;
+using UnityEditor.PackageManager;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 
 public class CameraRenderer
@@ -25,6 +29,8 @@ public class CameraRenderer
         new ShaderTagId("ForwardAdd"),
     };
 
+    private SceneView sceneView;
+
     public void Render(ScriptableRenderContext context, Camera camera)
     {
         this.camera = camera;
@@ -33,6 +39,7 @@ public class CameraRenderer
         if (!this.Cull()) return;
 
         this.Setup();
+        buffer.SetViewProjectionMatrices(camera.worldToCameraMatrix, camera.projectionMatrix);
         this.DrawVisibleGeometry();
 
         this.Submit();
@@ -51,13 +58,17 @@ public class CameraRenderer
         }
         var filterSettings = new FilteringSettings(RenderQueueRange.all);
 
-        //context.DrawRenderers(this.cullingResults, ref drawingSettings, ref filterSettings);
         this.DrawStaticGeometryIndirect();
+        context.DrawRenderers(this.cullingResults, ref drawingSettings, ref filterSettings);
         this.context.DrawSkybox(this.camera);
     }
 
     private void DrawStaticGeometryIndirect()
     {
+        if(this.sceneView == null){
+            sceneView = SceneView.lastActiveSceneView;
+            SceneView.duringSceneGui  += this.SceneViewGUI;
+        }
         if (GPURenderManager.IsInitialized)
         {
             GPURenderManager.Instance.InitializeAllGroupBuffers();
@@ -68,6 +79,20 @@ public class CameraRenderer
             GPURenderManager.Instance.GatherAllRenderers();
             GPURenderManager.Instance.InitializeAllGroupBuffers();
         }
+    }
+
+    private void SceneViewGUI(SceneView scene)
+    {
+        
+        if(Event.current.type == EventType.MouseDown){
+            var raycastResult = new List<RaycastResult>();
+            var pointerEventData = new PointerEventData(EventSystem.current);
+            pointerEventData.position = Event.current.mousePosition;
+            Debug.Log(pointerEventData.position);
+            Debug.Log(EventSystem.current);
+            //EventSystem.current.RaycastAll(pointerEventData, raycastResult);
+            //Debug.Log(raycastResult[0]);
+        } 
     }
 
     private void Submit()

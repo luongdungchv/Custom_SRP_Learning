@@ -29,6 +29,7 @@ public class GPUStaticRenderer : MonoBehaviour
     }
 #if UNITY_EDITOR
     private Vector3 lastPosition;
+    private Material lastMaterial;
     private void Update()
     {
         if(lastPosition != transform.position){
@@ -36,6 +37,18 @@ public class GPUStaticRenderer : MonoBehaviour
             Debug.Log(this.indexInGroup);
             this.group.UpdateInstanceData(this.indexInGroup);
         }
+    }
+
+    public void Select(){
+
+    }
+
+    private void OnValidate() {
+        if(lastMaterial != null && lastMaterial != this.material){
+            this.group.RemoveInstance(this.indexInGroup);
+            GPURenderManager.Instance.RegisterRenderer(this, this.mesh, this.material);
+        }
+        lastMaterial = this.material;
     }
 #endif
 

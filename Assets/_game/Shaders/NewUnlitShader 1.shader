@@ -7,7 +7,7 @@ Shader "Unlit/NewUnlitShader"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" "Queue"="Transparent" }
+        Tags { "RenderType"="Opaque" "Queue"="Transparent" "LightMode"="SRPDefaultUnlit"}
         LOD 100
 
         Blend SrcAlpha OneMinusSrcAlpha
